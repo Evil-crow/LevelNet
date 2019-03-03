@@ -11,18 +11,16 @@
 #define LOGGER_LOG_FILE_H
 
 #include <string>
-#include <memory>
-#include <fstream>
-
 namespace log {
 
 class log_file {
  public:
   explicit log_file(const std::string &file_name);
-  void flush(const char *str);
+  ~log_file();
+  void flush(const char *str, size_t len);
 
  private:
-  std::unique_ptr<std::fstream> stream_;
+  int fd_;
 };
 
 }
