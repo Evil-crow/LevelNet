@@ -8,6 +8,16 @@
 #include "log_stream.h"
 
 namespace log {
+std::function<void(const char *, size_t)> log_stream::output_func_ = nullptr;
+log_stream::~log_stream()
+{
+  log::log_stream::output_func_(buffer_.data(), buffer_.count());
+}
+
+void log_stream::output_message_func(std::function<void(const char *, size_t)> functor)
+{
+  log_stream::output_func_ = std::move(functor);
+}
 
 template <typename T>
 void format_num(log_buffer &buffer, T val)
@@ -16,16 +26,16 @@ void format_num(log_buffer &buffer, T val)
   buffer.append(str.c_str(), str.size());
 }
 
-// 模板特例化, 缓解代码膨胀
+// 模板实例化, 缓解代码膨胀
 
-template void format_num(log_buffer, int);
-template void format_num(log_buffer, long);
-template void format_num(log_buffer, long long);
-template void format_num(log_buffer, unsigned int);
-template void format_num(log_buffer, unsigned long);
-template void format_num(log_buffer, unsigned long long);
-template void format_num(log_buffer, float);
-template void format_num(log_buffer, double);
+template<int> void format_num(log_buffer, int);
+template<long> void format_num(log_buffer, long);
+template<long long> void format_num(log_buffer, long long);
+template<unsigned int> void format_num(log_buffer, unsigned int);
+template<unsigned long> void format_num(log_buffer, unsigned long);
+template<long long> void format_num(log_buffer, unsigned long long);
+//
+
 
 log_stream &log_stream::operator<<(short val)
 {

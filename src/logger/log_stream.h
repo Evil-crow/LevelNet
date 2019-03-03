@@ -11,11 +11,15 @@
 
 #include "log_buffer.h"
 #include <cstring>
+#include <functional>
 
 namespace log {
 
 class log_stream {
  public:
+  ~log_stream();
+  static void output_message_func(std::function<void(const char *, size_t)> functor);
+
   log_stream &operator<<(short val);
   log_stream &operator<<(unsigned short val);
   log_stream &operator<<(int val);
@@ -48,7 +52,7 @@ class log_stream {
   }
 
   log_stream &operator<<(const unsigned char *str) {
-    return operator<<(static_cast<char *>(str));
+    return operator<<(reinterpret_cast<const char *>(str));
   }
 
   log_stream &operator<<(const std::string &str) {
@@ -64,6 +68,7 @@ class log_stream {
   void reset_buffer() {
     buffer_.reset();
   }
+  static std::function<void(const char *, size_t)> output_func_;
 
  private:
   log_buffer buffer_;
