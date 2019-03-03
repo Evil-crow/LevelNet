@@ -9,6 +9,7 @@
 
 #include <cstring>
 #include <memory>
+#include <iostream>
 
 namespace log {
 
@@ -25,7 +26,8 @@ log_buffer::log_buffer() : log_buffer(max_data_size) { ; }
 bool log_buffer::append(const char *str, size_t len)
 {
   if (available() > len) {
-    ::memcpy(data_.get(), str, len);
+    ::memcpy(data_.get() + index_, str, len);
+    index_ += len;
     return true;
   }
 
@@ -55,6 +57,7 @@ char *log_buffer::data() const
 void log_buffer::reset()
 {
   ::memset(data_.get(), 0, sizeof(size_));
+  index_ = 0;
 }
 
 }
