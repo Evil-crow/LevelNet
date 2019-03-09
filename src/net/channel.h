@@ -4,8 +4,8 @@
  * @author Crow 
  */
 
-#ifndef LEVELNET_CHANNEL_H
-#define LEVELNET_CHANNEL_H
+#ifndef LEVELNET_NET_CHANNEL_H
+#define LEVELNET_NET_CHANNEL_H
 
 #include <sys/epoll.h>
 #include <functional>
@@ -57,4 +57,4 @@ class Channel {
 
 }
 
-#endif //LEVELNET_CHANNEL_H
+#endif //LEVELNET_NET_CHANNEL_H

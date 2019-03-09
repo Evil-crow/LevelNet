@@ -4,12 +4,13 @@
  * @author Crow 
  */
 
-#ifndef LEVELNET_EPOLL_H
-#define LEVELNET_EPOLL_H
+#ifndef LEVELNET_NET_EPOLL_H
+#define LEVELNET_NET_EPOLL_H
 
 #include <sys/epoll.h>
 #include <vector>
 #include <memory>
+
 namespace levelnet {
 
 class Channel;
@@ -19,20 +20,20 @@ class Epoll {
   explicit Epoll(EventLoop *loop) noexcept ;
   ~Epoll();
 
-  int Poll(std::vector<Channel *> &active_channel, int timeout);
+  int Poll(std::vector<Channel *> &active_channels, int timeout);
   bool Add(Channel *channel);
   bool Update(Channel *channel);
   bool Delete(Channel *channel);
 
  private:
-  int FillActiveChannels(int event_num, std::vector<Channel> &channels);
+  int FillActiveChannels(int event_num, std::vector<Channel *> &active_channels);
 
   int ep_fd_;
   EventLoop *loop_;
   std::vector<epoll_event> active_events_;
-  const constexpr int KMaxEventSize = 1024;
+  const constexpr unsigned long KMaxEventSize = 1024;
 };
 
 }
 
-#endif //LEVELNET_EPOLL_H
+#endif //LEVELNET_NET_EPOLL_H
