@@ -12,6 +12,7 @@
 
 #include "net/epoll.h"
 #include "net/channel.h"
+#include "net/timer_queue.h"
 #include "utility/logger/logger.h"
 
 namespace levelnet {
@@ -38,11 +39,12 @@ EventLoop::EventLoop()
       calling_pending_functor_(false),
       event_fd_(detail::CreateEventFd()),
       epoller_(std::make_unique<Epoll>(this)),
-      event_channel_(std::make_unique<Channel>(this, event_fd_))
+      event_channel_(std::make_unique<Channel>(this, event_fd_)),
+      timer_queue_(std::make_unique<TimerQueue>(this))
 {
   active_channels_.reserve(1024);
 
-  event_channel_->SetFlags(R, true);
+  event_channel_->SetFlags(READ, true);
   epoller_->Add(event_channel_.get());
   event_channel_->SetReadCallback([this]() {
     eventfd_t data;
@@ -122,6 +124,25 @@ void EventLoop::TaskInLoop(EventLoop::Functor cb) {
 
   if (calling_pending_functor_)
     WakeUp();
+}
+
+TimerID EventLoop::RunAt(const Timer::TimeCallback &callback, Time time) {
+  return timer_queue_->AddTimer(std::move(callback), time, 0);
+}
+
+TimerID EventLoop::RunAfter(const Timer::TimeCallback &callback, double after) {
+  Time time_after(AddTime(Time::Now(), after));
+//  return timer_queue_->AddTimer(callback, time_after, 0);
+  return RunAt(callback, time_after);
+}
+
+TimerID EventLoop::RunEvery(const Timer::TimeCallback &callback, double space) {
+  Time time_every(AddTime(Time::Now(), space));
+  return timer_queue_->AddTimer(callback, time_every, space);
+}
+
+void EventLoop::Cancel(TimerID timer_id) {
+  timer_queue_->CancelTimer(timer_id);
 }
 
 }

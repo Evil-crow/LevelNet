@@ -12,10 +12,14 @@
 #include <vector>
 #include <functional>
 
+#include "net/timer.h"
+#include "net/timer_id.hpp"
+
 namespace levelnet {
 
 class Epoll;
 class Channel;
+class TimerQueue;
 class EventLoop {
  public:
   using Functor = std::function<void()>;
@@ -28,6 +32,10 @@ class EventLoop {
   bool AddChannel(Channel *channel);
   bool UpdateChannel(Channel *channel);
   bool DeleteChannel(Channel *channel);
+  TimerID RunAt(const Timer::TimeCallback &callback, Time time);
+  TimerID RunAfter(const Timer::TimeCallback &callback, double after);
+  TimerID RunEvery(const Timer::TimeCallback &callback, double space);
+  void Cancel(TimerID timer_id);
   void TaskInLoop(Functor cb);
 
  private:
@@ -42,6 +50,7 @@ class EventLoop {
   int event_fd_;
   std::unique_ptr<Epoll> epoller_;
   std::unique_ptr<Channel> event_channel_;
+  std::unique_ptr<TimerQueue> timer_queue_;
   std::vector<Channel *> active_channels_;
   std::vector<Functor> pending_functors_;
   std::mutex mutex_;
