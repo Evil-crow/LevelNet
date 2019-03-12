@@ -42,7 +42,7 @@ IPAddress::IPAddress(const IPAddress &address) noexcept
   addr_ = ToSockaddrIn();
 }
 
-IPAddress &IPAddress::operator=(const IPAddress &address) noexcept = default;
+//IPAddress &IPAddress::operator=(const IPAddress &address) noexcept = default;
 
 const in_port_t &IPAddress::Port() const {
   return port_;

@@ -28,8 +28,8 @@ bool Acceptor::Listening() {
   socket_->Bind(address_);
   socket_->Listen();
 
-  channel_->SetFlags(R | ET, true);
-  channel_->SetReadCallback([]() {
+  channel_->SetFlags(READ | ET, true);
+  channel_->SetReadCallback([this]() {
     IPAddress peer_address;
     while (true) {
       int connfd = socket_->Accept(peer_address);

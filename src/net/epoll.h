@@ -31,7 +31,7 @@ class Epoll {
   int ep_fd_;
   EventLoop *loop_;
   std::vector<epoll_event> active_events_;
-  const constexpr unsigned long KMaxEventSize = 1024;
+  static constexpr unsigned long KMaxEventSize = 1024;
 };
 
 }

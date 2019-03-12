@@ -5,8 +5,8 @@
  * @brief  This file is used to describe the Derived class IPAddress
  */
 
-#ifndef LEVEL_NET_IP_ADDRESS_H
-#define LEVEL_NET_IP_ADDRESS_H
+#ifndef LEVELNET_NET_IP_ADDRESS_H
+#define LEVELNET_NET_IP_ADDRESS_H
 
 #include <sys/types.h>
 #include <arpa/inet.h>
@@ -51,4 +51,4 @@ class IPAddress {
 
 }
 
-#endif //LEVEL_NET_IP_ADDRESS_H
+#endif //LEVELNET_NET_IP_ADDRESS_H
