@@ -13,12 +13,12 @@ namespace levelnet {
 Channel::Channel(EventLoop *loop, int fd)
   : loop_(loop), fd_(fd) { ; }
 
-inline void Channel::SetReadCallback(levelnet::Channel::EventCallback &&cb)  { read_callback_ = cb; }
-inline void Channel::SetWriteCallback(levelnet::Channel::EventCallback &&cb) { write_callback_ = cb; }
-inline void Channel::SetCloseCallback(levelnet::Channel::EventCallback &&cb) { close_callback_ = cb; }
-inline void Channel::SetErrorCallback(levelnet::Channel::EventCallback &&cb) { err_callback_ = cb; }
+void Channel::SetReadCallback(levelnet::Channel::EventCallback &&cb)  { read_callback_ = cb; }
+void Channel::SetWriteCallback(levelnet::Channel::EventCallback &&cb) { write_callback_ = cb; }
+void Channel::SetCloseCallback(levelnet::Channel::EventCallback &&cb) { close_callback_ = cb; }
+void Channel::SetErrorCallback(levelnet::Channel::EventCallback &&cb) { err_callback_ = cb; }
 
-void Channel::SetFlags(ChannelEvent event, bool flag) {
+void Channel::SetFlags(unsigned long  event, bool flag) {
   flags_ = flag ? (flags_ | event) : (flags_ & ~event);
 }
 
@@ -38,10 +38,10 @@ void Channel::HandleEvent() {
   } else if (revents_ & ChannelEvent::HUP) {
     if (close_callback_)
       close_callback_();
-  } else if (revents_ & ChannelEvent::R) {
+  } else if (revents_ & ChannelEvent::READ) {
     if (read_callback_)
       read_callback_();
-  } else if (revents_ & ChannelEvent::W) {
+  } else if (revents_ & ChannelEvent::WRITE) {
     if (write_callback_)
       write_callback_();
   }

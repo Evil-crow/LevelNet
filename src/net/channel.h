@@ -15,8 +15,8 @@ namespace levelnet {
 class EventLoop;
 
 enum ChannelEvent {
-  R = EPOLLIN,
-  W = EPOLLOUT,
+  READ = EPOLLIN,
+  WRITE = EPOLLOUT,
   ET = EPOLLET,
   ERR = EPOLLERR,
   HUP = EPOLLRDHUP,
@@ -30,7 +30,7 @@ class Channel {
   ~Channel() = default;
 
   void HandleEvent();
-  void SetFlags(ChannelEvent event, bool flag);
+  void SetFlags(unsigned long event, bool flag);
   void ClearFlags();
   void SetEvents(unsigned int events);
   void SetReadCallback(EventCallback &&cb);
